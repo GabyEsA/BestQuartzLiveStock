@@ -1587,85 +1587,85 @@
         }
 
         function activateSlider(slider) {
-            let currentIndex = 0;
-            const slides = slider.querySelectorAll('.slides img, .slides video'); // Seleccionar imágenes y videos dentro del slider
+            let currentIndex = 0; // Reset currentIndex to 0
+            const slides = slider.querySelectorAll('.slides img, .slides video'); // Select images and videos within the slider
             const dots = slider.querySelectorAll('.dot');
             const totalSlides = slides.length;
 
-            // Marca el slider como activo
+            // Mark the slider as active
             function markSliderAsActive() {
-                sliders.forEach(s => s.classList.remove('active-slider')); // Remover la clase de todos los sliders
-                slider.classList.add('active-slider'); // Añadir la clase al slider actual
+                sliders.forEach(s => s.classList.remove('active-slider')); // Remove the class from all sliders
+                slider.classList.add('active-slider'); // Add the class to the current slider
             }
 
             function showSlide(index) {
-                // Ocultar todas las imágenes y videos
+                // Hide all images and videos
                 slides.forEach(slide => {
                     slide.style.display = 'none';
                     if (slide.tagName === 'VIDEO') {
-                        slide.pause(); // Pausar el video si está oculto
+                        slide.pause(); // Pause the video if hidden
                     }
                 });
 
-                // Quitar clase activa de todos los puntos
+                // Remove active class from all dots
                 dots.forEach(dot => dot.classList.remove('active'));
 
-                // Mostrar el slide actual
+                // Show the current slide
                 const currentSlide = slides[index];
                 currentSlide.style.display = 'block';
                 if (currentSlide.tagName === 'VIDEO') {
-                    currentSlide.play(); // Reproducir el video si es visible
+                    currentSlide.play(); // Play the video if visible
                 }
 
-                // Activar el punto correspondiente
+                // Activate the corresponding dot
                 dots[index].classList.add('active');
             }
 
             function nextSlide() {
                 currentIndex = (currentIndex + 1) % totalSlides;
                 showSlide(currentIndex);
-                markSliderAsActive(); // Marcar el slider como activo al avanzar
+                markSliderAsActive(); // Mark the slider as active when advancing
             }
 
             function prevSlide() {
                 currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
                 showSlide(currentIndex);
-                markSliderAsActive(); // Marcar el slider como activo al retroceder
+                markSliderAsActive(); // Mark the slider as active when going back
             }
 
-            // Agregar eventos a los botones del slider actual
+            // Add events to the current slider's buttons
             slider.querySelector('.next').addEventListener('click', nextSlide);
             slider.querySelector('.prev').addEventListener('click', prevSlide);
 
-            // Agregar eventos a los puntos del slider actual
+            // Add events to the current slider's dots
             dots.forEach((dot, index) => {
                 dot.addEventListener('click', () => {
                     currentIndex = index;
                     showSlide(currentIndex);
-                    markSliderAsActive(); // Marcar el slider como activo al seleccionar un punto
+                    markSliderAsActive(); // Mark the slider as active when selecting a dot
                 });
             });
 
-            // Mostrar el primer slide al cargar
+            // Show the first slide on load
             showSlide(currentIndex);
 
-            // Marcar como activo al cargar el slider
+            // Mark as active on loading the slider
             markSliderAsActive();
 
-            // Cambio automático cada 12 segundos para este slider
-            setInterval(nextSlide, 12000); // 12000 milisegundos = 12 segundos
+            // Automatic change every 12 seconds for this slider
+            setInterval(nextSlide, 12000); // 12000 milliseconds = 12 seconds
         }
 
         function updateVisibleSlider() {
             sliders.forEach(slider => {
                 if (isElementInViewport(slider)) {
-                    // Activar el slider visible
+                    // Activate the visible slider
                     activateSlider(slider);
                 }
             });
         }
 
-        // Detectar el slider visible al cargar la página y al hacer scroll
+        // Detect the visible slider on page load and on scroll
         updateVisibleSlider();
         window.addEventListener('scroll', updateVisibleSlider);
     });
