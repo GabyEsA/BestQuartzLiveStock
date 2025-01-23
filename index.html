@@ -1696,6 +1696,20 @@
       }
   }
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Reset the slider value
+        const slider = document.getElementById("mySlider");
+        slider.value = slider.min; // Reset to minimum value
+
+        // Update display or any other functionality related to the slider
+        updateSliderDisplay(slider.value);
+    });
+
+    function updateSliderDisplay(value) {
+        document.getElementById("sliderValue").innerText = value;
+    }
+</script>
 
 </body>
 
