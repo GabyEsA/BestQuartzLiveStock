@@ -1674,6 +1674,31 @@
         document.getElementById("sliderValue").innerText = value;
     }
 </script>
+<script>
+    function searchAndNavigate() {
+        // Leer el valor del input
+        let query = document.getElementById('searchBar').value.trim();
+  
+        // Procesar el query: eliminar espacios y convertir a minúsculas
+        query = query.replace(/\s+/g, '').toLowerCase();
+  
+        // Buscar el elemento con el ID procesado
+        const targetElement = document.getElementById(query);
+  
+        if (targetElement) {
+            // Resaltar el elemento encontrado (opcional)
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('highlight'); // Remover resaltado previo
+            });
+            targetElement.classList.add('highlight');
+  
+            // Desplazarse al elemento encontrado
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            alert('No se encontro el elemento indicado, intente de nuevo.');
+        }
+    }
+  </script>
 
 </body>
 
