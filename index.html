@@ -1577,42 +1577,35 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const sliders = document.querySelectorAll('.slider');
-
-        function isElementInViewport(el) {
-            const rect = el.getBoundingClientRect();
-            return rect.top >= 0 && rect.left >= 0 &&
-                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                rect.right <= (window.innerWidth || document.documentElement.clientWidth);
-        }
+    $(document).ready(function() {
+        const sliders = $('.slider');
 
         function activateSlider(slider) {
             let currentIndex = 0; // Reset currentIndex to 0
-            const slides = slider.querySelectorAll('.slides img, .slides video');
-            const dots = slider.querySelectorAll('.dot');
+            const slides = slider.find('.slides img, .slides video');
+            const dots = slider.find('.dot');
             const totalSlides = slides.length;
 
             function markSliderAsActive() {
-                sliders.forEach(s => s.classList.remove('active-slider'));
-                slider.classList.add('active-slider');
+                sliders.removeClass('active-slider');
+                slider.addClass('active-slider');
             }
 
             function showSlide(index) {
-                slides.forEach((slide, i) => {
-                    slide.style.display = (i === index) ? 'block' : 'none';
-                    if (slide.tagName === 'VIDEO') {
-                        slide.pause();
+                slides.each((i, slide) => {
+                    $(slide).css('display', (i === index) ? 'block' : 'none');
+                    if ($(slide).is('video')) {
+                        $(slide).get(0).pause(); // Pause all videos
                     }
                 });
 
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('active', i === index);
+                dots.each((i, dot) => {
+                    $(dot).toggleClass('active', i === index);
                 });
 
-                const currentSlide = slides[index];
-                if (currentSlide.tagName === 'VIDEO') {
-                    currentSlide.play();
+                const currentSlide = slides.eq(index);
+                if (currentSlide.is('video')) {
+                    currentSlide.get(0).play(); // Play the current video
                 }
             }
 
@@ -1628,59 +1621,45 @@
                 markSliderAsActive();
             }
 
-            slider.querySelector('.next').addEventListener('click', nextSlide);
-            slider.querySelector('.prev').addEventListener('click', prevSlide);
+            slider.find('.next').on('click', nextSlide);
+            slider.find('.prev').on('click', prevSlide);
 
-            dots.forEach((dot, index) => {
-                dot.addEventListener('click', () => {
+            dots.each((index, dot) => {
+                $(dot).on('click', () => {
                     currentIndex = index;
                     showSlide(currentIndex);
                     markSliderAsActive();
                 });
             });
 
-            showSlide(currentIndex );
+            showSlide(currentIndex);
             markSliderAsActive();
             setInterval(nextSlide, 12000);
-        }
 
-        function updateVisibleSlider() {
-            sliders.forEach(slider => {
-                if (isElementInViewport(slider)) {
-                    activateSlider(slider);
+            // Fullscreen functionality
+            slides.each((index, slide) => {
+                if ($(slide).is('video')) {
+                    const fullscreenBtn = $('<button class="fullscreen-btn">Fullscreen</button>');
+                    $(slide).after(fullscreenBtn);
+                    fullscreenBtn.on('click', () => {
+                        if (slide.requestFullscreen) {
+                            slide.requestFullscreen();
+                        } else if (slide.mozRequestFullScreen) { // Firefox
+                            slide.mozRequestFullScreen();
+                        } else if (slide.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                            slide.webkitRequestFullscreen();
+                        } else if (slide.msRequestFullscreen) { // IE/Edge
+                            slide.msRequestFullscreen();
+                        }
+                    });
                 }
             });
         }
 
-        updateVisibleSlider();
-        window.addEventListener('scroll', updateVisibleSlider);
+        sliders.each((index, slider) => {
+            activateSlider($(slider));
+        });
     });
-</script>
-
-<script>
-  function searchAndNavigate() {
-      // Leer el valor del input
-      let query = document.getElementById('searchBar').value.trim();
-
-      // Procesar el query: eliminar espacios y convertir a minúsculas
-      query = query.replace(/\s+/g, '').toLowerCase();
-
-      // Buscar el elemento con el ID procesado
-      const targetElement = document.getElementById(query);
-
-      if (targetElement) {
-          // Resaltar el elemento encontrado (opcional)
-          document.querySelectorAll('.section').forEach(section => {
-              section.classList.remove('highlight'); // Remover resaltado previo
-          });
-          targetElement.classList.add('highlight');
-
-          // Desplazarse al elemento encontrado
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else {
-          alert('No se encontro el elemento indicado, intente de nuevo.');
-      }
-  }
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
