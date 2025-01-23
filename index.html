@@ -1588,84 +1588,69 @@
 
         function activateSlider(slider) {
             let currentIndex = 0; // Reset currentIndex to 0
-            const slides = slider.querySelectorAll('.slides img, .slides video'); // Select images and videos within the slider
+            const slides = slider.querySelectorAll('.slides img, .slides video');
             const dots = slider.querySelectorAll('.dot');
             const totalSlides = slides.length;
 
-            // Mark the slider as active
             function markSliderAsActive() {
-                sliders.forEach(s => s.classList.remove('active-slider')); // Remove the class from all sliders
-                slider.classList.add('active-slider'); // Add the class to the current slider
+                sliders.forEach(s => s.classList.remove('active-slider'));
+                slider.classList.add('active-slider');
             }
 
             function showSlide(index) {
-                // Hide all images and videos
-                slides.forEach(slide => {
-                    slide.style.display = 'none';
+                slides.forEach((slide, i) => {
+                    slide.style.display = (i === index) ? 'block' : 'none';
                     if (slide.tagName === 'VIDEO') {
-                        slide.pause(); // Pause the video if hidden
+                        slide.pause();
                     }
                 });
 
-                // Remove active class from all dots
-                dots.forEach(dot => dot.classList.remove('active'));
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
 
-                // Show the current slide
                 const currentSlide = slides[index];
-                currentSlide.style.display = 'block';
                 if (currentSlide.tagName === 'VIDEO') {
-                    currentSlide.play(); // Play the video if visible
+                    currentSlide.play();
                 }
-
-                // Activate the corresponding dot
-                dots[index].classList.add('active');
             }
 
             function nextSlide() {
                 currentIndex = (currentIndex + 1) % totalSlides;
                 showSlide(currentIndex);
-                markSliderAsActive(); // Mark the slider as active when advancing
+                markSliderAsActive();
             }
 
             function prevSlide() {
                 currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
                 showSlide(currentIndex);
-                markSliderAsActive(); // Mark the slider as active when going back
+                markSliderAsActive();
             }
 
-            // Add events to the current slider's buttons
             slider.querySelector('.next').addEventListener('click', nextSlide);
             slider.querySelector('.prev').addEventListener('click', prevSlide);
 
-            // Add events to the current slider's dots
             dots.forEach((dot, index) => {
                 dot.addEventListener('click', () => {
                     currentIndex = index;
                     showSlide(currentIndex);
-                    markSliderAsActive(); // Mark the slider as active when selecting a dot
+                    markSliderAsActive();
                 });
             });
 
-            // Show the first slide on load
-            showSlide(currentIndex);
-
-            // Mark as active on loading the slider
+            showSlide(currentIndex );
             markSliderAsActive();
-
-            // Automatic change every 12 seconds for this slider
-            setInterval(nextSlide, 12000); // 12000 milliseconds = 12 seconds
+            setInterval(nextSlide, 12000);
         }
 
         function updateVisibleSlider() {
             sliders.forEach(slider => {
                 if (isElementInViewport(slider)) {
-                    // Activate the visible slider
                     activateSlider(slider);
                 }
             });
         }
 
-        // Detect the visible slider on page load and on scroll
         updateVisibleSlider();
         window.addEventListener('scroll', updateVisibleSlider);
     });
